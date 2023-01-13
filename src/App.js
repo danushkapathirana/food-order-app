@@ -1,8 +1,12 @@
-import React from "react";
+import React, { Fragment } from "react";
+
+import Header from "./components/Layout/Header";
 
 const App = () => {
   return(
-    <h1>Let's get started.!</h1>
+    <Fragment>
+      <Header />
+    </Fragment>
   )
 }
 
