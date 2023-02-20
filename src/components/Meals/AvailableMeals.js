@@ -35,12 +35,16 @@ import classes from "./AvailableMeals.module.css"
 const AvailableMeals = () => {
     const [meals, setMeals] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const [httpError, setHttpError] = useState()
 
     // useEffect should not return a promise
     // useEffect(async () => {await fetch("")}, []), not allowed
     useEffect(() => {
         const fetchMeals = async () => {
             const response = await fetch("https://food-order-app-8f132-default-rtdb.firebaseio.com/meals.json")
+            if(!response.ok) {
+                throw new Error("Something went wrong.!")
+            }
             const responseData = await response.json()
 
             // transform the object into array
@@ -56,13 +60,24 @@ const AvailableMeals = () => {
             setMeals(loadedMeals)
             setIsLoading(false)
         }
-        fetchMeals()
+        fetchMeals().catch((err) => {
+            setIsLoading(false)
+            setHttpError(err.message)
+        })
     }, [])
 
     if(isLoading) {
         return(
             <section className={classes.MealsLoading}>
                 <p>Loading...</p>
+            </section>
+        )
+    }
+
+    if(httpError) {
+        return(
+            <section className={classes.MealsError}>
+                <p>{httpError}</p>
             </section>
         )
     }
